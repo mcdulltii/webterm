@@ -734,10 +734,23 @@ define([
               ~~Command: feed
               ~Details: displays a latest 5 feed entries of portfolio site
               ~Usage:   feed~`,
+        error_codes: {
+          F01: {
+            code: 'F01',
+            details: 'Fetch API call failed. Connection interrupted.'
+          }
+        },
+
         run: async function() {
           const terminal = this.terminal
           let url = 'https://mcdulltii.github.io/feed'
           fetch(url)
+            .then(function(response) {
+              if (!response.ok) {
+                throw (this.error_codes.F01)
+              }
+              return response
+            })
             .then(response => response.text())
             .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
             .then(data => {
