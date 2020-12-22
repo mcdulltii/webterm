@@ -780,6 +780,30 @@ define([
               }
             });
         }
+      },
+
+      {
+        name: 'cd',
+        aliases: ['sl'],
+        help: `~Command help
+              ~~Command: cd / sl
+              ~Details: emulating the changing of links on the webpage
+              ~Usage:   cd [number]~`,
+        run: async function() {
+
+        }
+      },
+
+      {
+        name: 'ls',
+        aliases: ['dir'],
+        help: `~Command help
+              ~~Command: ls / dir
+              ~Details: emulating the directory listing of links
+              ~Usage:   ls~`,
+        run: async function() {
+
+        }
       }
     ]
   }
