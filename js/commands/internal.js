@@ -716,15 +716,32 @@ define([
 
       {
         name: 'restart',
-        aliases: ['rs', 'quit', 'exit'],
+        aliases: ['rs'],
         help: `~Command help
               ~~Command: restart
-              ~Alias: rs / quit / exit
+              ~Alias: rs
               ~Details: restart the terminal
               ~Usage:   restart~`,
         run: async function() {
           this.terminal.print('restarting...')
           document.location.reload(false)
+        }
+      },
+
+      {
+        name: 'quit',
+        aliases: ['exit'],
+        help: `~Command help
+              ~~Command: quit
+              ~Alias: exit
+              ~Details: quit the terminal
+              ~Usage:   quit~`,
+        run: async function() {
+          this.terminal.print('quitting...')
+          for (var i=0; i<document.getElementsByClassName('modal'); i++) {
+            var modal_n = document.getElementById('modal_'+i)
+            modal_n.setAttribute('aria-hidden','true')
+          }
         }
       },
 
@@ -786,7 +803,8 @@ define([
         name: 'cd',
         aliases: ['sl'],
         help: `~Command help
-              ~~Command: cd / sl
+              ~~Command: cd
+              ~Alias: sl
               ~Details: emulating the changing of links on the webpage
               ~Usage:   cd [number]~`,
         run: async function() {
@@ -798,7 +816,8 @@ define([
         name: 'ls',
         aliases: ['dir'],
         help: `~Command help
-              ~~Command: ls / dir
+              ~~Command: ls
+              ~Alias: dir
               ~Details: emulating the directory listing of links
               ~Usage:   ls~`,
         run: async function() {

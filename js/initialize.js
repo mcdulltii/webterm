@@ -16,7 +16,7 @@ require(['terminal', 'commands/internal'], (Terminal, internal) => {
   }
   if (! terminal.inIframe()) {
     var iframemodules = internal.modules.filter(function(value) {
-      if (/^(?!cd|ls).*$/g.exec(value.name)) return value
+      if (/^(?!cd|ls|quit).*$/g.exec(value.name)) return value
     })
     internal.modules = iframemodules
   }
