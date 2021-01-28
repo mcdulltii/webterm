@@ -222,6 +222,17 @@ define(
       }
 
       /**
+       * Checks whether terminal is loaded within an iframe
+       */
+      function inIframe() {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+      }
+
+      /**
        * Add the input to the terminal's history state.
        * @param {String} input - Input from the main stdin.
        */
@@ -656,6 +667,7 @@ define(
         setup: setup,
         install: function(module) { install(this, module) },
         run_command: run_command,
+        inIframe: inIframe,
 
         /* commands */
         get_installed_commands: get_installed_commands,

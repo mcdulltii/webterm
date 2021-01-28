@@ -4,14 +4,6 @@ window.mobileCheck = function() {
   return check;
 };
 
-function inIframe () {
-  try {
-      return window.self !== window.top;
-  } catch (e) {
-      return true;
-  }
-}
-
 require(['terminal', 'commands/internal'], (Terminal, internal) => {
   const terminal = new Terminal()
 
@@ -22,7 +14,7 @@ require(['terminal', 'commands/internal'], (Terminal, internal) => {
     })
     internal.modules = mobilemodules
   }
-  if (inIframe()) {
+  if (! terminal.inIframe()) {
     var iframemodules = internal.modules.filter(function(value) {
       if (/^(?!cd|ls).*$/g.exec(value.name)) return value
     })
