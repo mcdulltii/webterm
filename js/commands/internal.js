@@ -738,10 +738,7 @@ define([
               ~Usage:   quit~`,
         run: async function() {
           this.terminal.print('quitting...')
-          for (var i=0; i<document.getElementsByClassName('modal'); i++) {
-            var modal_n = document.getElementById('modal_'+i)
-            modal_n.setAttribute('aria-hidden','true')
-          }
+          document.location.href = document.location;
         }
       },
 
