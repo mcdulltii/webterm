@@ -738,7 +738,7 @@ define([
               ~Usage:   quit~`,
         run: async function() {
           this.terminal.print('quitting...')
-          document.location.href = document.location;
+          window.top.location.href = window.top.location
         }
       },
 
