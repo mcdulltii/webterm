@@ -479,7 +479,7 @@ define([
         error_codes: {
           H01: {
             code: 'H01',
-            details: 'cannnot find command or command doesn\'t have a manual...'
+            details: 'cannot find command or command doesn\'t have a manual...'
           }
         },
 
@@ -786,12 +786,14 @@ define([
                   i++
                 }
               }
+              terminal.new_line()
               terminal.printlink('Latest 5 Portfolio entries from ', 'https://mcdulltii.github.io')
               terminal.new_line()
               for (var i = 1; i < items.length + 1; i++) {
                 var each = items[i - 1]
                 terminal.printlink(i.toString() + ': ' + each[0] + ', ', each[1])
               }
+              terminal.new_line()
             });
         }
       },
@@ -804,8 +806,61 @@ define([
               ~Alias: sl
               ~Details: emulating the changing of links on the webpage
               ~Usage:   cd [number]~`,
-        run: async function() {
+        error_codes: {
+          CD01: {
+            code: 'CD01',
+            details: 'Already at root working directory'
+          },
+          CD02: {
+            code: 'CD02',
+            details: 'Unable to change working directory'
+          }
+        },
 
+        run: async function(args) {
+          const terminal = this.terminal
+          var lsOffset = 2
+          terminal.new_line()
+          if (args[0]) {
+            var choice = args[0]
+            if (choice == 0) {
+              terminal.print('Working directory at /')
+              pwd = 0
+            } else if (choice == 1 || args.join('') == '..') {
+              if (pwd > 0) {
+                terminal.print('Moved to previous working directory')
+                pwd = prevpwd 
+              } else {
+                throw (this.error_codes.CD01)
+              }
+            } else {
+              if (pwd == 0) {
+                try {
+                  if (typeof navList[choice - lsOffset][1] == 'number') {
+                    terminal.print('Working directory at /' + decodeURI(navList[choice - lsOffset][0]))
+                    prevpwd = pwd
+                    pwd = 1 + navList[choice - lsOffset][1]
+                  } else {
+                    terminal.print('Redirecting to ' + navList[choice - lsOffset][1])
+                    window.top.location.href = navList[choice - lsOffset][1]
+                  }
+                } catch (err) {
+                  throw (this.error_codes.CD02)
+                }
+              } else {
+                try {
+                  terminal.print('Redirecting to ' + feedList[pwd - 1][choice - lsOffset][1])
+                  window.top.location.href = feedList[pwd - 1][choice - lsOffset][1]
+                } catch (err) {
+                  throw (this.error_codes.CD02)
+                }
+              }
+            }
+          } else {
+            terminal.print('Working directory at /')
+            pwd = 0
+          }
+          terminal.new_line()
         }
       },
 
@@ -817,8 +872,36 @@ define([
               ~Alias: dir
               ~Details: emulating the directory listing of links
               ~Usage:   ls~`,
-        run: async function() {
+        error_codes: {
+          L01: {
+            code: 'L01',
+            details: 'Directory not found'
+          }
+        },
 
+        run: async function() {
+          const terminal = this.terminal
+          terminal.new_line()
+          terminal.print('0: .')
+          terminal.print('1: ..')
+          var lsOffset = 2
+          if (pwd == 0) {
+            for (var i = 0; i < navList.length; i++) {
+              if (typeof navList[i][1] == 'number') {
+                terminal.print((i + lsOffset) + ': ' + decodeURI(navList[i][0]))
+              } else {
+                terminal.printlink((i + lsOffset) + ': ', navList[i][1].slice(0, -1))
+              }
+            }
+          } else {
+            try {
+              for (var i = 0; i < feedList[pwd - 1].length; i++)
+                terminal.printlink((i + lsOffset) + ': ', feedList[pwd - 1][i][1])
+            } catch (err) {
+              throw (this.error_codes.L01)
+            }
+          }
+          terminal.new_line()
         }
       }
     ]

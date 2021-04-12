@@ -4,6 +4,70 @@ window.mobileCheck = function() {
   return check;
 };
 
+if (! terminal.inIframe()) {
+  navList = [];
+  feedList = [];
+  let url = 'https://mcdulltii.github.io/sitemap'
+  var pwd = 0, prevpwd = 0
+  fetch(url)
+    .then(function(response) {
+      if (!response.ok) {
+        throw ('Fetch API call failed. Connection interrupted.')
+      }
+      return response
+    })
+    .then(response => response.text())
+    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    .then(data => {
+      var feed = data.childNodes[0].children
+      feed = [...feed].filter(function(value) {
+        if (value.localName == 'url') return value
+      })
+      var navIndex = 0, inNav = -1
+      for (var i = 0; i < feed.length; i++) {
+        var child = feed[i].childNodes
+        var loc = child[1].innerHTML
+        if (! loc.match(/\/posts\//g)) {
+          var nav = loc.match(/io\/(.+)/g)
+          if (nav) {
+            nav = nav[0].replace('io', '').split('/').filter(function (value) {
+              return value != ''
+            })
+            if (! loc.match(/html/g)) {
+              // TODO: Assuming navigation is one subdirectory in
+              navList.push([nav[0], loc])
+            } else {
+              nav = nav.filter(function (value) {
+                if (! value.match(/^[0-9]+$/g)) return value
+              })
+              for (var j = 0; j < navList.length; j++) {
+                if (Array.isArray(navList[j])) {
+                  if (navList[j][0] == nav[0]) {
+                    inNav = j
+                    break
+                  }
+                }
+              }
+              if (inNav != -1) {
+                navIndex = navList[inNav][1]
+              } else {
+                navIndex = navList.length
+                navList.push([nav[0], navIndex])
+              }
+              var sitename = nav[1].replace('.html', '')
+              var siteloc = loc.replace('.html', '')
+              if (inNav == -1)
+                feedList.push([[sitename, siteloc]])
+              else
+                feedList[navIndex].push([sitename, siteloc])
+              inNav = -1
+            }
+          }
+        }
+      }
+    });
+}
+
 require(['terminal', 'commands/internal'], (Terminal, internal) => {
   const terminal = new Terminal()
 
