@@ -166,3 +166,14 @@ textarea:disabled {
 .error-code {
 	color: var(--config-error-code-color);
 }
+
+pre > a {
+	color: #ffd1dc;
+	text-decoration: none;
+	font-size: 95%;
+}
+
+pre > a:hover {
+	font-style: italic;
+	font-size: 100%;
+}
